@@ -209,6 +209,7 @@ class TextDownloadAPI(APIView):
         project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         documents = project.documents.all()
         painter = self.select_painter(format)
+
         data = painter.paint(documents)
         return Response(data)
 

@@ -58,6 +58,7 @@ class DocumentSerializer(serializers.ModelSerializer):
         annotations = model.objects.filter(document=instance.id)
         if request:
             annotations = annotations.filter(user=request.user)
+        print(annotations)
         serializer = serializer(annotations, many=True)
         return serializer.data
 
@@ -121,23 +122,27 @@ class ProjectFilteredPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
 class DocumentAnnotationSerializer(serializers.ModelSerializer):
     # label = ProjectFilteredPrimaryKeyRelatedField(queryset=Label.objects.all())
     label = serializers.PrimaryKeyRelatedField(queryset=Label.objects.all())
+    label_text = serializers.StringRelatedField(source='label.text', default=None)
+    # label_text = serializers.SlugRelatedField(queryset=Label.objects.all(), slug_field='text')
     document = serializers.PrimaryKeyRelatedField(queryset=Document.objects.all())
 
     class Meta:
         model = DocumentAnnotation
-        fields = ('id', 'prob', 'label', 'user', 'document')
-        read_only_fields = ('user', )
+        fields = ('id', 'prob', 'label', 'label_text', 'user', 'document')
+        read_only_fields = ('user','label_text',)
 
 
 class SequenceAnnotationSerializer(serializers.ModelSerializer):
     #label = ProjectFilteredPrimaryKeyRelatedField(queryset=Label.objects.all())
     label = serializers.PrimaryKeyRelatedField(queryset=Label.objects.all())
+    label_text = serializers.StringRelatedField(source='label.text', default=None)
+
     document = serializers.PrimaryKeyRelatedField(queryset=Document.objects.all())
 
     class Meta:
         model = SequenceAnnotation
-        fields = ('id', 'prob', 'label', 'start_offset', 'end_offset', 'user', 'document')
-        read_only_fields = ('user',)
+        fields = ('id', 'prob', 'label', 'label_text', 'start_offset', 'end_offset', 'user', 'document')
+        read_only_fields = ('user', 'label_text',)
 
 
 class Seq2seqAnnotationSerializer(serializers.ModelSerializer):

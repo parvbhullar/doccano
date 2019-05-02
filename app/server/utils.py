@@ -426,8 +426,10 @@ class JSONPainter(object):
         data = []
         for d in serializer.data:
             d['meta'] = json.loads(d['meta'])
+            # print(d)
             for a in d['annotations']:
                 a.pop('id')
+                a.pop('label')
                 a.pop('prob')
                 a.pop('document')
             data.append(d)
